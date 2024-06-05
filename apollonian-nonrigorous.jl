@@ -259,12 +259,12 @@ end
 
 using JLD
 
-function printlogfile(str) 
+function printlogfile(str,PREC=PREC) 
     # We'll write a lot of output to apollonian-nonrigorous.log, opening and closing when we do it
     # This is better than piping output to standard output as writing to standard output is often
     # delayed so you don't know what your program is doing
     # Plus we don't call this very often so the file stuff overhead doesn't matter
-    open("apollonian-nonrigorous.log", "a") do io
+    open("apollonian-nonrigorous-$PREC.log", "a") do io
        write(io, str*"\n")
    end;
 end
@@ -274,9 +274,9 @@ end
 # i.e. iteratively estimate root of f by linearly interpolating f(x_{n-1}), f(x_{n-2})
 function secant(f,est0,est1,args...)
     @time err1, _ = f(est1,args...);
-    printlogfile("PREC = $PREC, s = $est1, err = $err1 (first guess)")
+    printlogfile("PREC = $PREC, s = $est1, err = $err1 (first guess)",PREC)
     @time err0, eigvec = f(est0,args...);
-    printlogfile("PREC = $PREC, s = $est0, err = $err0 (second guess)")
+    printlogfile("PREC = $PREC, s = $est0, err = $err0 (second guess)",PREC)
 
     save("apollonian-nonrigorous-$PREC-working.jld","s",est0,"eigval_err",err0,"eigvec",reshape(eigvec,N1,N2),
                         "mlogϵ",mlogϵ,"floatingpointprec",precision(BigFloat)) ## NOTE code repeated below
@@ -286,7 +286,7 @@ function secant(f,est0,est1,args...)
                     # Newton's method has quadratic convergence but this has golden mean-ic convergence
         est0, est1, err1 = est0 - err0*(est0-est1)/(err0-err1), est0, err0
         @time err0, eigvec = f(est0,args...);
-        printlogfile("PREC = $PREC, s = $est0, err = $err0")
+        printlogfile("PREC = $PREC, s = $est0, err = $err0",PREC)
         (1.30 < est0 < 1.31) || break # otherwise we're in garbage zone
         
         if abs(err0) < besterr
@@ -301,10 +301,10 @@ function secant(f,est0,est1,args...)
 end
 
 # Let's gooooooo
-printlogfile("Ready to go: precision = $PREC")
-printlogfile("mlogϵ = $mlogϵ, -log eps(BigFloat) = $(-log(eps(BigFloat)))")
+printlogfile("Ready to go: precision = $PREC",PREC)
+printlogfile("mlogϵ = $mlogϵ, -log eps(BigFloat) = $(-log(eps(BigFloat)))",PREC)
 secant(computeeigs,
     BigFloat("1.3056867280498771846459862068510408911060264414964682964461883889969864205029698645452161231505387132807924668824226"),
-    BigFloat("1.30568672804987718464598620685104089110602644149646829644618838899698642050296986454521612315053871")
+    BigFloat("1.30568672804987718464598620685104089110602644149646829644618838899698642050296986454521612315053871")-1e4eps(BigFloat)
     )
-printlogfile("Done :-)")
+printlogfile("Done :-)",PREC)
