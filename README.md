@@ -1,10 +1,10 @@
 # apollonian
 
-Code for computing the Hausdorff dimension of the Apollonian circle packing
+Code for computing the Hausdorff dimension of the Apollonian circle packing.
 
-The code has two parts, a non-rigorous step where you find a dimension and eigenvalue estimate, and a rigorous step where you certify it.
-## apollonian-nonrigorous
-This code takes one argument: the number of bits in the `BigFloat` precision. So far the highest we've run it is 448 bits (at which point memory on our research server started to be a problem). You run the code for NBITS-bit arithmetic as follows:
+The code is in two parts: a non-rigorous step where you find a dimension and eigenvalue estimate, and a rigorous step where you certify it.
+
+The non-rigorous code takes one argument: the number of bits in the `BigFloat` precision. So far the highest we've run it is 448 bits (at which point memory on our research server started to be a problem). You run the code for NBITS-bit arithmetic as follows:
 
 ``` julia apollonian-nonrigorous.jl NBITS ```
 
