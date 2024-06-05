@@ -4,16 +4,12 @@ Code for computing the Hausdorff dimension of the Apollonian circle packing.
 
 The code is in two parts: a non-rigorous step where you find a dimension and eigenvalue estimate, and a rigorous step where you certify it.
 
-The non-rigorous code takes one argument: the number of bits in the `BigFloat` precision. So far the highest we've run it is 448 bits (at which point memory on our research server started to be a problem). You run the code for NBITS-bit arithmetic as follows:
+The non-rigorous code takes one argument: the number of bits in the `BigFloat` precision. So far the highest we've run it is 448 bits (at which point memory on our research server started to be a problem). You run the code for NBITS-bit arithmetic as ` julia apollonian-nonrigorous.jl NBITS `.
 
-``` julia apollonian-nonrigorous.jl NBITS ```
+This program finds a good dimension estimate iteratively using the secant method: it tells you what numbers it gets as it goes in `apollonian-nonrigorous-NBITS.log`.
+Eventually it spits out a JLD file called `apollonian-nonrigorous-NBITS.jld` containing a bunch of relevant data including the dimension estimate and eigenfunction estimate.
 
-This program finds a good dimension estimate iteratively using the secant method: it tells you what numbers it gets as it goes in `apollonian-nonrigorous-NBITS.log`
-Eventually spits out a JLD file called `apollonian-nonrigorous-NBITS.jld` containing a bunch of relevant data including the dimension estimate and eigenfunction estimate.
-
-Then to validate it, you make sure this file is in the same folder as `apollonian-rigorous.jl` and call
-
-``` julia apollonian-rigorous.jl NBITS ```
+Then to validate it, you make sure this file is in the same folder as `apollonian-rigorous.jl` and call `julia apollonian-rigorous.jl NBITS `.
 
 This then does all the rigorously validated min-max stuff, and prints out a Theorem into `apollonian-rigorous-NBITS.log`.
 
