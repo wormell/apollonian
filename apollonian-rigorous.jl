@@ -349,17 +349,17 @@ function dimensionbound(s)
     s + hull(minmaxest.lo/(Dminus*φplus),minmaxest.hi/(Dplus*φminus))
 end
 
-function printlogfile(str) 
+function printlogfile(str,PREC=PREC) 
     # Write to file
-    open("apollonian-rigorous.log", "a") do io
+    open("apollonian-rigorous-$PREC.log", "a") do io
        write(io, str*"\n")
    end;
 end
 
 
-println("ready to go")
+printlogfile("ready to go",PREC)
 dbound = dimensionbound(s_est)
-printlogfile("Theorem: d_A ∈ [$(dbound.lo),")
-printlogfile("                $(dbound.hi)]")
-printlogfile("Width of bound: $(round(diam(dbound),sigdigits=2))")
-printlogfile("")
+printlogfile("Theorem: d_A ∈ [$(dbound.lo),",PREC)
+printlogfile("                $(dbound.hi)]",PREC)
+printlogfile("Width of bound: $(round(diam(dbound),sigdigits=2))",PREC)
+printlogfile("",PREC)
