@@ -284,17 +284,21 @@ function secant(f,est0,est1,args...)
     besterr = TYPE(Inf)
     for i = 1:log((1+sqrt(5))/2,log(2)*PREC)+5 
                     # Newton's method has quadratic convergence but this has golden mean-ic convergence
-        est0, est1, err1 = est0 - err0*(est0-est1)/(err0-err1), est0, err0
+		    # We're using this as a failsafe: what should happen is the break at the bottom of the loop gets triggered
+	estimatednexterror = abs(err0)*abs(err1) # approximate error of the estimate in the next step
+		
+        est0, est1, err1 = est0 - err0*(est0-est1)/(err0-err1), est0, err0 # new estimate of s via secant method
         @time err0, eigvec = f(est0,args...);
         printlogfile("PREC = $PREC, s = $est0, err = $err0",PREC)
         (1.30 < est0 < 1.31) || break # otherwise we're in garbage zone
         
-        if abs(err0) < besterr
+        if abs(err0) < besterr # i.e. we've gotten a better candidate than before
             besterr = abs(err0)
             save("apollonian-nonrigorous-$PREC-working.jld","s",est0,"eigval_err",err0,"eigvec",reshape(eigvec,N1,N2),
                         "mlogϵ",mlogϵ,"floatingpointprec",precision(BigFloat)) ## NOTE code repeated above
         end
-        if abs(err0) <= abs(err1) && log(2,abs(err1)) < PREC*2/(1+sqrt(5))
+		
+        if abs(err0) <= abs(err1) && log(2,estimatednexterror) < -PREC # i.e. we should be at epsilon precision
 	    break
         end
     end
