@@ -21,7 +21,7 @@ Theorem: d_A ∈ [1.305686728049877184645986206851040891106026441496468296446188
          Width of bound: 1.4e-130
 ```
 
-NB: this code is designed to be run in parallel (and the `addprocs` line in both code files tries to fill your CPU up with processes). If you don't want the overheads of that, remove all the distributed wrapping around the code.
+NB: this code is designed to be heavy duty: run in `BigFloat`, and in parallel (and the `addprocs` line in both code files tries to fill your CPU up with processes). If you want to use other kinds of float, change `const TYPE =` to something involving your favoured float type. If you don't want the overheads of parallelisation, remove all the distributed wrapping around the code.
 
 If you use this, of course please cite our paper: https://arxiv.org/abs/2406.04922 (and let us know if you get any better results).
 
