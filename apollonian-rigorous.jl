@@ -4,7 +4,7 @@ addprocs(Base.Sys.CPU_THREADS-2)
 @everywhere using JLD, IntervalArithmetic # BEWARE! IntervalArithmetic resets the BigFloat precision
 @eval @everywhere PREC = $(parse(Int,ARGS[1]))
 @everywhere setprecision(BigFloat,PREC)
-@everywhere println(precision(BigFloat))
+@everywhere println("On this process, PREC = ",precision(BigFloat))
 @everywhere const JLDbox = load("apollonian-nonrigorous-"*string(PREC)*".jld")
 @everywhere begin
     const TYPE = Interval{BigFloat}
@@ -343,8 +343,8 @@ function dimensionbound(s)
     φplus = dct_V[1] + norm(dct_V[2:end],1)
     φminus = dct_V[1] - norm(dct_V[2:end],1)
 
-    println("minmax = $minmaxest")
-    println("φ^+ = $φplus, φ^- = $φminus")
+    # println("minmax = $minmaxest")
+    # println("φ^+ = $φplus, φ^- = $φminus")
 
     s + hull(minmaxest.lo/(Dminus*φplus),minmaxest.hi/(Dplus*φminus))
 end
