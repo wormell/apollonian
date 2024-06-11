@@ -21,6 +21,8 @@ Theorem: d_A ∈ [1.305686728049877184645986206851040891106026441496468296446188
          Width of bound: 1.4e-130
 ```
 
-If you use this, of course please cite our paper (and let us know if you get any better results).
+NB: this code is designed to be run in parallel (and the `addprocs` line in both code files tries to fill your CPU up with processes). If you don't want the overheads of that, remove all the distributed wrapping around the code.
+
+If you use this, of course please cite our paper: https://arxiv.org/abs/2406.04922 (and let us know if you get any better results).
 
 Caroline Wormell (@wormell) and Polina Vytnova (@Polevita)
