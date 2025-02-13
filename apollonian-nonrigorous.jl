@@ -3,7 +3,6 @@ addprocs(max(Base.Sys.CPU_THREADS-2,40))
 
 ### DISTRIBUTED PART ###
 @eval @everywhere PREC = $(parse(Int,ARGS[1]))
-# NOT TRUE FOR NOW SEE IF IT WORKS PROPERLY -> actually we do it in double the precision because I think there's some horrid source of numerical error
 @eval @everywhere setprecision(BigFloat,PREC)
 @everywhere begin open("test.log","a") do io; write(io,"$(precision(BigFloat))\n"); end; end
 @everywhere begin
@@ -53,7 +52,7 @@ addprocs(max(Base.Sys.CPU_THREADS-2,40))
     function lagrangepolynomials!(v::Vector{T},x::T,points::Vector{T},monomialcons::Vector{T},
             errortol=0) where T
         # gives errors and certainly won't play nice with validated numerics if x is too close to a point
-        # I think we don't expect it though
+        # we don't expect it though
         fullpoly = prod(2(x .- points)) # for Chebyshev points this is T_N(x)
         abs(fullpoly) < errortol && error("Evaluating Lagrange polynomial too close to a Lagrange point")
         for (n,p) in enumerate(points)
@@ -65,7 +64,7 @@ addprocs(max(Base.Sys.CPU_THREADS-2,40))
     lagrangepolynomials_even!(v,x,points,monomialcons,errortol=0) = 
         lagrangepolynomials!(v,2x^2-1,points,monomialcons,errortol)
 
-    # I think this is a nice optimised way of doing this so you don't have to keep allocating vectors but lol idk
+    # I think this is a nice optimised way of doing this so you don't have to keep allocating vectors but could be wrong
     struct Lagrange2D{T,S}
         T1::Vector{T}
         T2::Vector{T}
@@ -162,7 +161,7 @@ addprocs(max(Base.Sys.CPU_THREADS-2,40))
     const mlogϵ = log(TYPE(2))*PREC # precision of our approximation, we hope
     const N2 = ceil(Int,mlogϵ/Rad/2) # number of even Chebyshev modes in y direction
     const N1 = 2N2 # number of Chebyshev modes
-                                    # Allows us to choose other parametrs in terms of number of basis functions
+                                    # Allows us to choose other parameters in terms of number of basis functions
     const Nstar = ceil(Int,ν+mlogϵ/2PI) # branch to start the E-M formula at. N in the paper
     const K = floor(Int,(2PI*(Nstar-ν) - 1)/2);   # number of odd derivatives to take in the E-M formula
     const halfM = K                 # same scaling (~ mlogϵ) and we need M >= 2K anyway
@@ -284,7 +283,8 @@ function secant(f,est0,est1,args...)
     besterr = TYPE(Inf)
     for i = 1:log((1+sqrt(5))/2,log(2)*PREC)+5 
                     # Newton's method has quadratic convergence but this has golden mean-ic convergence
-		    # We're using this as a failsafe: what should happen is the break at the bottom of the loop gets triggered
+		    # We're using this for as a failsafe: what should happen is the break at the bottom of 
+		    # the loop gets triggered
 	estimatednexterror = abs(err0)*abs(err1) # approximate error of the estimate in the next step
 		
         est0, est1, err1 = est0 - err0*(est0-est1)/(err0-err1), est0, err0 # new estimate of s via secant method
